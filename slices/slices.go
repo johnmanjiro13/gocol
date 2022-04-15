@@ -57,6 +57,38 @@ func Clone[S ~[]E, E any](s S) S {
 	return append(S([]E{}), s...)
 }
 
+func Uniq[S ~[]E, E comparable](s S) S {
+	if len(s) == 0 {
+		return s
+	}
+	i := 1
+	last := s[0]
+	for _, v := range s[1:] {
+		if v != last {
+			s[i] = v
+			i++
+			last = v
+		}
+	}
+	return s[:i]
+}
+
+func UniqFunc[S ~[]E, E any](s S, eq func(E, E) bool) S {
+	if len(s) == 0 {
+		return s
+	}
+	i := 1
+	last := s[0]
+	for _, v := range s[1:] {
+		if !eq(v, last) {
+			s[i] = v
+			i++
+			last = v
+		}
+	}
+	return s[:i]
+}
+
 func Map[S1 ~[]E1, S2 []E2, E1, E2 any](s S1, f func(E1) E2) S2 {
 	dst := make(S2, len(s), len(s))
 	for i, v := range s {

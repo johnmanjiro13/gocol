@@ -172,6 +172,39 @@ func TestClone(t *testing.T) {
 	assert.Equal(t, 0, len(slices.Clone(s1[:0])))
 }
 
+func equal[T comparable](v1, v2 T) bool {
+	return v1 == v2
+}
+
+var uniqTests = map[string]struct {
+	s    []int
+	want []int
+}{
+	"nil slice":       {nil, nil},
+	"blank slice":     {[]int{}, []int{}},
+	"single value":    {[]int{1}, []int{1}},
+	"non duplicate":   {[]int{1, 2, 3}, []int{1, 2, 3}},
+	"duplicate value": {[]int{1, 2, 2, 3}, []int{1, 2, 3}},
+}
+
+func TestUniq(t *testing.T) {
+	for name, tt := range uniqTests {
+		t.Run(name, func(t *testing.T) {
+			got := slices.Uniq(tt.s)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestUniqFunc(t *testing.T) {
+	for name, tt := range uniqTests {
+		t.Run(name, func(t *testing.T) {
+			got := slices.UniqFunc(tt.s, equal[int])
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
 func TestMap(t *testing.T) {
 	t.Run("double integers", func(t *testing.T) {
 		s := []int{1, 2, 3, 4, 5}
