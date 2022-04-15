@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 
 	"johnmanjiro13/gocol/slices"
 )
@@ -80,6 +80,96 @@ func TestInclude(t *testing.T) {
 			assert.Equal(t, tt.want != -1, got)
 		})
 	}
+}
+
+func TestInsert(t *testing.T) {
+	tests := map[string]struct {
+		s    []int
+		i    int
+		add  []int
+		want []int
+	}{
+		"first": {
+			[]int{1, 2, 3, 4},
+			0,
+			[]int{5, 6},
+			[]int{5, 6, 1, 2, 3, 4},
+		},
+		"middle": {
+			[]int{1, 2, 3, 4},
+			2,
+			[]int{5, 6},
+			[]int{1, 2, 5, 6, 3, 4},
+		},
+		"last": {
+			[]int{1, 2, 3, 4},
+			4,
+			[]int{5, 6},
+			[]int{1, 2, 3, 4, 5, 6},
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := slices.Insert(tt.s, tt.i, tt.add...)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestDelete(t *testing.T) {
+	tests := map[string]struct {
+		s    []int
+		i    int
+		j    int
+		want []int
+	}{
+		"first": {
+			[]int{1, 2, 3},
+			0,
+			0,
+			[]int{1, 2, 3},
+		},
+		"only one": {
+			[]int{1, 2, 3, 4, 5},
+			0,
+			1,
+			[]int{2, 3, 4, 5},
+		},
+		"middle": {
+			[]int{1, 2, 3, 4, 5},
+			2,
+			3,
+			[]int{1, 2, 4, 5},
+		},
+		"last": {
+			[]int{1, 2, 3, 4, 5},
+			4,
+			4,
+			[]int{1, 2, 3, 4, 5},
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			got := slices.Delete(tt.s, tt.i, tt.j)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestClone(t *testing.T) {
+	s1 := []int{1, 2, 3, 4, 5}
+	s2 := slices.Clone(s1)
+	assert.Equal(t, s1, s2)
+
+	s1[0] = 6
+	assert.NotEqual(t, s1, s2)
+
+	assert.Nil(t, slices.Clone([]int(nil)))
+
+	assert.NotNil(t, slices.Clone(s1[:0]))
+	assert.Equal(t, 0, len(slices.Clone(s1[:0])))
 }
 
 func TestMap(t *testing.T) {
