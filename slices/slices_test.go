@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"johnmanjiro13/gocol/slices"
+	"github.com/johnmanjiro13/gocol/slices"
 )
 
 func isEven(i int) bool {

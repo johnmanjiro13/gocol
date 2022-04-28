@@ -1,4 +1,4 @@
-module johnmanjiro13/gocol
+module github.com/johnmanjiro13/gocol
 
 go 1.18
 
